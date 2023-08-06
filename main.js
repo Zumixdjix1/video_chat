@@ -3,7 +3,7 @@
 
 
 // Typescript
-import AC, { AgoraChat } from '/agora-chat'
+import AC from 'agora-chat'
 
 
 
