@@ -5,7 +5,7 @@ import AC, { AgoraChat } from 'agora-chat'
 
 
 // Replaces <Your app key> with your app key.
-const appKey = "<411007347#1177856>";
+const appKey = "411007347#1177856";
 // Initializes the Web client.
 const conn = new AC.connection({
 	appKey: appKey,
