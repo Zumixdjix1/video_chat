@@ -1,41 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-  <title>Agora Chat Examples</title>
-  <script type="module" src="/main.js"></script>
-  <!-- <link rel="stylesheet" href="style.css" type="text/css" /> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ermerodri chat</title>
 </head>
-
 <body>
-  <h2>Agora Chat Examples</h2>
-  <form id="loginForm">
-    <div class="input-field">
-      <label>User ID</label>
-      <input type="text" placeholder="User ID" id="userID">
-    </div>
-    <div class="input-field">
-      <label>Token</label>
-      <input type="text" placeholder="Token" id="token">
-    </div>
-    <div>
-      <button type="button" id="login">Login</button>
-      <button type="button" id="logout">Logout</button>
-    </div>
-    <div class="input-field">
-      <label>Peer user ID</label>
-      <input type="text" placeholder="Peer user ID" id="peerId">
-    </div>
-    <div class="input-field">
-      <label>Peer Message</label>
-      <input type="text" placeholder="Peer message" id="peerMessage">
-      <button type="button" id="send_peer_message">send</button>
-    </div>
+
+  <form id="form">
+    <input type="text" name="message" />
   </form>
-  <hr/>
-  <div id="log"></div>
+
+  <div id="messages"></div>
+  
 </body>
+<script type="text/javascript" src="agora-rtm-sdk-1.5.1.js"></script>
+<script type="text/javascript">
+    let appID = "3620ebe6249a4525b666008d26f79615"
+    let uid = String(Math.floor(Math.random() * 232))
+    let token = null
+    let channelName = 'main'
+    
+    let initiateRTM = async () => {
+    let client = await AgoraRTM.createInstance(appID)
+      await client.login({uid, token})
 
+    const channel = await client.createChannel(channelName)
+    await channel.join() 
+
+    let form = document.getElementById('form')
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefaul()
+      let message = e.target.message.value
+      await channel.sendMessage({text:message, type:'text'})
+      form.reset()
+
+      handleMessage({text:message})
+
+    })
+    channel.on('ChannelMessage', (message,peerId) => {
+      console.log('Message:', message)
+      handleMessage(message)
+    })
+
+  }
+
+  let handleMessage = async (message) => { 
+    let messages = document.getElementById('messages')
+    let messageElement = `<p>${message.text}</p>`
+    messages.insertAdjacentHTML('beforeend', messageElement)
+
+  }
+
+  initiateRTM()
+</script>
 </html>
-
